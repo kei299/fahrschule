@@ -1,0 +1,3 @@
+eclipse.preferences.version=1
+validator.Checked=src/main/webapp/WEB-INF/jsp/show.jsp,src/main/webapp/WEB-INF/jsp/head.jsp,src/main/webapp/WEB-INF/jsp/drivingSchool_personal.jsp
+validator.Unchecked=

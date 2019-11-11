@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace执行sql操作的接口路径，相对于src -->
+<mapper namespace="com.jxedt.dao.VideoMapper">
+
+	<!-- id为接口里面的方法，resultType为返回值类型，parameterType为参数类型-->
+	<!-- 基本数据类型直接使用，引用数据类型需要增加(相对于src)路径 -->	
+
+	<!-- <select id="getTotalCount" resultType="int"  parameterType="query.VideoQuery">
+		SELECT COUNT(1) FROM video 
+		<where>
+			<if test="videoType!=null and videoType!='' ">
+				and videoType=#{videoType}
+			</if>
+		</where>
+	</select> -->	
+	
+	<!-- 分页获取视频列表 -->
+	<select id="getVideoList" resultType="Video" >
+		SELECT videoId,videoName,videoType,numViews,pointRatio,cover,videoImge,videoTime  FROM video
+		LIMIT  #{videoQuery.startIndex}, #{videoQuery.pageSize}
+	</select>	
+	
+	<select id="getVideoListByType" resultType="Video" >
+		SELECT videoId,videoName,videoType,numViews,pointRatio,cover,videoImge,videoTime  FROM video
+		where 1=1
+		<if test="videoType!=0" >
+			and videoType=#{videoType}
+		</if>
+		LIMIT  #{videoQuery.startIndex}, #{videoQuery.pageSize}
+	</select>
+	
+	<select id="getCount" resultType="java.lang.Integer" parameterType = "VideoQuery" >
+		select count(1) from video
+		<!-- LIMIT  #{videoQuery.startIndex}, #{videoQuery.pageSize} -->
+	</select>
+	
+	<select id="getCountByType" resultType="java.lang.Integer" parameterType = "VideoQuery" >
+		select count(1) from video
+		where 1=1
+		<if test="videoType!=0" >
+			and videoType=#{videoType}
+		</if>
+		<!-- LIMIT  #{videoQuery.startIndex}, #{videoQuery.pageSize} -->
+	</select>
+	
+	<!-- 根据id获取视频 -->
+	<select id="getVideoById" parameterType="int" resultType="Video">
+		SELECT videoId,videoName,videoType,numViews,pointRatio,cover,videoTime,videoImge
+		FROM video WHERE videoId=#{id}
+ 	</select>  
+
+	<!-- 添加视频 -->
+	<!-- <insert id="addVideo" parameterType="Video">
+		INSERT INTO video(videoId,videoName,videoType,numViews,pointRatio,cover) 
+		VALUES(#{videoId},#{videoName},#{videoType},#{numViews},#{pointRatio},#{cover})
+	</insert> -->
+	
+	<!-- 根据视频id删除视频 -->
+	<!-- <delete id="deleteVideoById" parameterType="int">
+		DELETE FROM video WHERE videoId=#{id}
+	</delete> -->
+	
+	<!-- 根据条件删除视频 -->
+<!-- 	<delete id="deleteVideoByIds" >
+		DELETE FROM video
+		<where>
+			videoId in
+			<foreach collection="array" item="id" open="(" separator="," close=")">
+				#{id}
+			</foreach>
+		</where>
+	</delete> -->
+	
+	<!-- 修改视频 -->
+	<!-- <update id="updateVideo" parameterType="Video" >
+		update video
+		<set>
+			<if test="videoId!=null and videoId!=''">
+				docId=#{docId},
+			</if>
+			<if test="videoName!=null and videoName!=''">
+				videoName=#{videoName},
+			</if>
+			<if test="videoType!=null and videoType!=''">
+				videoType=#{videoType},
+			</if>
+			<if test="numViews!=null and numViews!=''">
+				numViews=#{numViews},
+			</if>
+			<if test="pointRatio!=null and pointRatio!=''">
+				pointRatio=#{pointRatio},
+			</if>
+			<if test="cover!=null and cover!=''">
+				cover=#{cover},
+			</if>
+		</set>
+		<where>
+			<if test="videoId!=null and uploadDate!=''" >
+				videoId=#{videoId}
+			</if>
+		</where>
+	</update> -->
+
+</mapper>

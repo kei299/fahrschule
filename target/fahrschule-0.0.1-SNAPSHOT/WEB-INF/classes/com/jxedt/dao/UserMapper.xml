@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jxedt.dao.CoachMapper" >
+  <resultMap id="BaseResultMap" type="com.jxedt.entity.User" >
+    <id column="userId" property="userid" jdbcType="INTEGER" />
+    <result column="poneNum" property="ponenum" jdbcType="VARCHAR" />
+    <result column="randomCode" property="randomcode" jdbcType="VARCHAR" />
+    <result column="userType" property="usertype" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List" >
+    userId, poneNum, randomCode, userType
+  </sql>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from user
+    where userId = #{userid,jdbcType=INTEGER}
+  </select>
+  
+  
+  <select id="selectByName" resultMap="BaseResultMap" parameterType="java.lang.String" >
+    select 
+    <include refid="Base_Column_List" />
+    from user
+    where poneNum = #{poneNum,jdbcType=VARCHAR}
+    <!-- where poneNum = #{ponenum,jdbcType=VARCHAR} -->
+  </select>
+  
+  <select id="selectByNameAndPass" resultMap="BaseResultMap" parameterType="com.jxedt.entity.User" >
+    select 
+    <include refid="Base_Column_List" />
+    from user
+    where poneNum = #{ponenum,jdbcType=VARCHAR} AND randomCode = #{randomcode,jdbcType=VARCHAR} 
+  </select>
+  
+   <select id="getAuditList" resultType="User" >
+		SELECT userId, poneNum, randomCode, userType FROM user
+		WHERE  state IS NULL
+  </select>
+  
+  
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from user
+    where userId = #{userid,jdbcType=INTEGER}
+  </delete>
+  <insert id="insert" parameterType="com.jxedt.entity.User" >
+    insert into user (userId, poneNum, randomCode, 
+      userType)
+    values (#{userid,jdbcType=INTEGER}, #{ponenum,jdbcType=VARCHAR}, #{randomcode,jdbcType=VARCHAR}, 
+      #{usertype,jdbcType=INTEGER})
+  </insert>
+  <insert id="insertSelective" parameterType="com.jxedt.entity.User" >
+    insert into user
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="userid != null" >
+        userId,
+      </if>
+      <if test="ponenum != null" >
+        poneNum,
+      </if>
+      <if test="randomcode != null" >
+        randomCode,
+      </if>
+      <if test="usertype != null" >
+        userType,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="userid != null" >
+        #{userid,jdbcType=INTEGER},
+      </if>
+      <if test="ponenum != null" >
+        #{ponenum,jdbcType=VARCHAR},
+      </if>
+      <if test="randomcode != null" >
+        #{randomcode,jdbcType=VARCHAR},
+      </if>
+      <if test="usertype != null" >
+        #{usertype,jdbcType=INTEGER},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.jxedt.entity.User" >
+    update user
+    <set >
+      <if test="ponenum != null" >
+        poneNum = #{ponenum,jdbcType=VARCHAR},
+      </if>
+      <if test="randomcode != null" >
+        randomCode = #{randomcode,jdbcType=VARCHAR},
+      </if>
+      <if test="usertype != null" >
+        userType = #{usertype,jdbcType=INTEGER},
+      </if>
+    </set>
+    where userId = #{userid,jdbcType=INTEGER}
+  </update>
+  <update id="updatePass" parameterType="com.jxedt.entity.User" >
+    update user
+    <set >
+      <if test="randomcode != null" >
+        randomCode = #{randomcode,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where    poneNum = #{ponenum,jdbcType=VARCHAR}
+  </update>
+  
+  
+  <update id="updateByPrimaryKey" parameterType="com.jxedt.entity.User" >
+    update user
+    set poneNum = #{ponenum,jdbcType=VARCHAR},
+      randomCode = #{randomcode,jdbcType=VARCHAR},
+      userType = #{usertype,jdbcType=INTEGER}
+    where userId = #{userid,jdbcType=INTEGER}
+  </update>
+</mapper>

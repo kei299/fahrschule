@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace对应接口类所在的包路径 -->
+<mapper namespace="com.jxedt.dao.accompanyMapper">
+	<select id="getAccompanyList" resultType="Accompany" parameterType = "FcQuery">
+		SELECT accompanyId,fahrschuleId,accompanyName,ofSchoolAge,accompanyPrice,accompanyComment,accompanyPhone,accompanyIntro,accompanyIntroduce FROM accompany
+		LIMIT  #{fcQuery.startIndex}, #{fcQuery.pageSize}
+	</select>
+
+	<select id="getList" resultType="Accompany" >
+		SELECT accompanyId,fahrschuleId,accompanyName,ofSchoolAge,accompanyPrice,accompanyComment,accompanyPhone,accompanyIntro,accompanyIntroduce FROM accompany
+		
+	</select>
+	
+	<select id="getCount" resultType="Integer" >
+		select count(1) from accompany
+	</select>
+
+</mapper>

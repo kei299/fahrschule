@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace对应接口类所在的包路径 -->
+<mapper namespace="com.jxedt.dao.FahrschuleMapper">
+	<!-- 分页查询数据 -->
+	<select id="getFahrschuleList" resultType="Fahrschule" >
+		SELECT fahrschuleId,fahrschuleName,dbName,fahrschulePassword,fahrschuleAddress,fahrschuleIntro,fahrschulePhone,fahrschulePicture,fahrschulePrice,classIntro,fullName,businessLicense,state,province,city,area FROM fahrschule
+		<where>
+			<if test="fcQuery.condition!=null and fcQuery.condition!=''" >
+				fahrschuleName like concat('%',#{fcQuery.condition},'%')
+			</if>
+			<if test="fahrschule.fahrschulePhone!=null and fahrschule.fahrschulePhone!=''">
+				AND fahrschulePhone = #{fahrschule.fahrschulePhone}
+			</if>
+			<if test="fcQuery.province!=null and fcQuery.province!=''">
+				AND province = #{fcQuery.province}
+			</if>
+			AND state = 3
+		</where>
+		LIMIT  #{fcQuery.startIndex}, #{fcQuery.pageSize}
+	</select>
+	<!-- 查询数据 -->
+	<select id="getList" resultType="Fahrschule" >
+		SELECT fahrschuleId,fahrschuleName,dbName,fahrschulePassword,fahrschuleAddress,fahrschuleIntro,fahrschulePhone,fahrschulePicture,fahrschulePrice,classIntro,fullName,businessLicense,state,province,city,area FROM fahrschule
+	</select>
+	<!-- 根据ID查询数据 -->
+	<select id="getFahrschule" resultType="Fahrschule" >
+		SELECT fahrschuleId,fahrschuleName,dbName,fahrschulePassword,fahrschuleAddress,fahrschuleIntro,fahrschulePicture,fahrschulePhone,fahrschulePicture,fahrschulePrice,classIntro,fullName,businessLicense,state,province,city,area FROM fahrschule
+		<where>
+			<if test="fahrschule.fahrschulePhone!=null and fahrschule.fahrschulePhone!=''">
+				AND fahrschulePhone = #{fahrschule.fahrschulePhone}
+			</if>
+			<if test="fahrschule.fahrschuleId!=null and fahrschule.fahrschuleId!=''">
+				AND fahrschuleId = #{fahrschule.fahrschuleId}
+			</if>
+		</where>
+	</select>
+	<!-- 获取总数据数 -->
+	<select id="getCount" resultType="java.lang.Integer"  >
+		SELECT count(1) from fahrschule
+		<where>
+			<if test="fcQuery.condition!=null and fcQuery.condition!=''" >
+				fahrschuleName like concat('%',#{fcQuery.condition},'%')
+			</if>
+			<if test="fcQuery.province!=null and fcQuery.province!=''">
+				AND province = #{fcQuery.province}
+			</if>
+			AND state = 3
+		</where>
+	</select>
+	<!-- 根据驾校ID查询班型 -->
+	<select id = "getFahrschuleClassList"  resultType="FahrschuleClass" >
+		SELECT classId,fahrschuleId,className,licenceType,allocation,onTime,way,classPrice FROM fahrschule_class where fahrschuleId = #{id}
+	</select>
+	<!-- 查询未审核的驾校 -->
+	<select id="getAuditList" resultType="Fahrschule" >
+		SELECT fahrschuleId,fahrschuleName,dbName,fahrschulePassword,fahrschuleAddress,fahrschuleIntro,fahrschulePhone,fahrschulePicture,fahrschulePrice,classIntro,fullName,businessLicense,state,province,city,area FROM fahrschule
+		WHERE  state IS NULL
+	</select>
+	<!-- 获取驾校环境图片 -->
+	<select id="getEmt" resultType="Emt">
+		SELECT  fahrschuleId,emtInfo FROM fahrschule_emt WHERE fahrschuleId=#{id};
+	</select>
+	<!-- 获取驾校简介-->
+	<select id="getIntro" resultType="Intro" >
+		SELECT introId,fahrschuleId,fahrschueSituation,fahrschuleServe,fahrschuleOther FROM fahrschule_intro WHERE fahrschuleId=#{id};
+	</select>
+	<resultMap id="getSite" type="BusPath">
+		<id column="bpId"  property="bpId" />
+		<result column="fahrschuleId" property="fahrschuleId" />
+		<result column="bpName" property="bpName" />
+		<collection property="sites" ofType="Site">
+			<id column="siteId"  property="siteId"/>
+			<result  column="bpId"  property="bpId" />
+			<result  column="siteName"  property="siteName"/>
+			<result  column="startTime"  property="startTime"/>
+		</collection>
+	</resultMap>
+	<!--查询驾校路线-->
+	<select id="getBusPath" parameterType="java.lang.Integer"  resultMap="getSite">
+		SELECT fb.`bpId`,fb.`bpName`,fb.`fahrschuleId`,fs.`siteId`,fs.`siteName`,fs.`startTime` FROM fahrschule_buspath fb
+		JOIN fahrschule_site fs ON fs.`bpId`=fb.`bpId` WHERE fb.`fahrschuleId` = #{id}
+	</select>
+	<!-- 查询驾校训练场地 -->
+	<select id="getPlace" parameterType="java.lang.Integer"  resultType="Place">
+		SELECT * FROM fahrschule_place WHERE fahrschuleId = #{id}
+	</select>
+	<!-- 根据注册的数据添加驾校信息 -->
+	<insert id="addFahrschule" >
+		INSERT INTO fahrschule (fahrschuleName,dbName,fahrschulePhone,fullName) VALUES(#{fahrschule.fahrschuleName},#{fahrschule.dbName},#{fahrschule.fahrschulePhone},#{fahrschule.fullName})
+	</insert>
+	<!-- 修改驾校信息 -->
+	<update id="doUpdate" >
+		UPDATE fahrschule SET fahrschuleId=#{fahrschule.fahrschuleId},fahrschuleName=#{fahrschule.fahrschuleName},dbName=#{fahrschule.dbName},fahrschulePassword=#{fahrschule.fahrschulePassword}, 
+			fahrschuleAddress=#{fahrschule.fahrschuleAddress},fahrschuleIntro=#{fahrschule.fahrschuleIntro},fahrschulePhone=#{fahrschule.fahrschulePhone},fahrschulePicture=#{fahrschule.fahrschulePicture},fahrschulePrice=#{fahrschule.fahrschulePrice},classIntro=#{fahrschule.classIntro},
+			fullName=#{fahrschule.fullName},businessLicense=#{fahrschule.businessLicense},state=#{fahrschule.state},province=#{fahrschule.province},
+			city=#{fahrschule.city},area=#{fahrschule.area}
+			WHERE fahrschuleId=#{fahrschule.fahrschuleId};
+	</update>
+
+</mapper>
+

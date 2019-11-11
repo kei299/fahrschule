@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace执行sql操作的接口路径，相对于src -->
+<mapper namespace="com.jxedt.dao.VideoTypeMapper">
+
+	<!-- 查看视频类型列表 -->
+	<select id="getVideoTypeList" resultType="com.jxedt.entity.VideoType">
+		SELECT typeId,typeName FROM videoType
+	</select>	
+
+</mapper>

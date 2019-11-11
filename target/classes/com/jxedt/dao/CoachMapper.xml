@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!-- namespace对应接口类所在的包路径 -->
+<mapper namespace="com.jxedt.dao.CoachMapper">
+	<!-- 分页查询数据 -->
+	<select id="getCoachList" resultType="Coach" >
+		SELECT
+			coachId,coachName,coachPhone,fahrschuleId,fahrschuleName,coachYear,coachCharge,ScoreNum,coachHead,coachIntro,charge
+		FROM
+			coach
+		LIMIT  #{fcQuery.startIndex}, #{fcQuery.pageSize}
+	</select>
+	<!-- 查询数据 -->
+	<select id="getList" resultType="Coach" >
+		SELECT coachId,fahrschuleId,coachName,coachPhone,coachCharge,coachHead,coachIntro FROM coach
+	</select>
+	<!-- 根据ID查询数据 -->
+	<select id="getCoach" resultType="Coach" >
+		SELECT coachId,coachName,coachPhone,fahrschuleId,fahrschuleName,coachPassword,coachYear,coachCharge,scoreNum,coachHead,coachIntro,charge FROM coach
+		<where>
+			<if test="coach.coachPhone!=null and coach.coachPhone!=''">
+				AND coachPhone = #{coach.coachPhone}
+			</if>
+			<if test="coach.coachId!=null and coach.coachId!=''">
+				AND coachId = #{coach.coachId}
+			</if>
+		</where>
+	</select>
+	<!--根据ID或手机号查询教练班型-->
+	<select id="getCoachClass" resultType="CoachClass">
+		SELECT c.* ,cc.drivingLicense,cc.teachingTime,cc.IQAMA,cc.pickUp,cc.charge FROM coach c,coachClass cc
+		<where>
+			<if test="coachClass.coachPhone!=null and coachClass.coachPhone!=''">
+				 cc.coachPhone = #{coachClass.coachPhone}
+			</if>
+			and cc.coachPhone = c.coachPhone
+		</where>
+	</select>
+	<!--根据ID获取教练评价-->
+	<select id="getCoachScore" resultType="Score">
+		select s.* from coach c,score s
+		where
+			s.coachId=#{coach.coachId} and c.coachId = s.coachId
+	</select>
+	<!-- 获取总数据数 -->
+	<select id="getCount" resultType="java.lang.Integer"  >
+		select count(1) from coach
+	</select>
+	<!-- 根据教练ID查询班型 -->
+	<select id = "getCoachClassList" parameterType = "java.lang.Integer" resultType="CoachClass" >
+		SELECT coachClassId,coachId,coachName,drivingLicense,teachingTime,IQAMA,pickUp,charge FROM coachClass WHERE coachId = #{id}
+	</select>
+	<!-- 根据注册的数据添加教练信息 -->
+	<insert id="addCoach" >
+		INSERT INTO coach (coachName,coachPhone) VALUES(#{coach.coachName},#{coach.coachPhone})
+	</insert>
+	<!--根据手机号修改教练密码-->
+	<select id="updatePwd" parameterType="java.lang.String">
+		UPDATE coach SET coachPassword = #{coach.coachPassWord}
+		where
+			coachPhone = #{coach.coachPhone}
+	</select>
+	<!-- 查询未审核的教练 -->
+	<!--<select id="getAuditList" resultType="Coach" >
+		SELECT fahrschuleId,fahrschuleName,dbName,fahrschulePassword,fahrschuleAddress,fahrschuleIntro,fahrschulePhone,fahrschulePicture,fahrschulePrice,classIntro,fullName,businessLicense,state,provinceId,cityId,areaId FROM fahrschule
+		WHERE  state IS NULL
+	</select>-->
+	<!--查询排行2-10教练-->
+	<select id="coachRanking" resultType="Coach" >
+		SELECT coachId,coachPhone,coachName,scoreNum
+		FROM coach
+		ORDER BY scoreNum DESC
+		LIMIT 1,10
+	</select>
+	<!--查询排行第一教练-->
+	<select id="coachNo1" resultType="Coach">
+		SELECT coachId,coachPhone,coachName,coachHead,scoreNum,coachYear,fahrschuleName
+		FROM coach
+		ORDER BY scoreNum DESC
+		LIMIT 0,1
+	</select>
+</mapper>

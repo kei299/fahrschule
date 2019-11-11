@@ -1,0 +1,1 @@
+(function(){var jxedthash=window.location.hash;if(jxedthash.indexOf("#nomobile")<0){var jxedtmobile=/android/i.test(navigator.userAgent)||/iphone/i.test(navigator.userAgent);if(jxedtmobile){if(typeof mobileurl!="undefined"){window.location.href=mobileurl}else{window.location.href="http://m.jxedt.com/"}}}})();
